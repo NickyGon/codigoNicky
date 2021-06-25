@@ -1,0 +1,142 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Description: My Lambda Resources
+Resources:
+  PutAdopterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: putAdopter
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref MyUsersTable
+      Handler: adopters.putAdopter
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/adopter/{adopterId}"
+            Method: PUT
+  
+  GetAdopterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getAdopter
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref MyUsersTable
+      Handler: adopters.getAdopter
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/adopter/{adopterId}"
+            Method: GET
+            
+  PutAdoptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: createAdoption
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref MyUsersTable
+      Handler: adopters.createAdoption
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/adopter/{adopterId}/pet/{petId}"
+            Method: PUT
+  
+  ApproveAdoptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: approveAdoption
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref MyUsersTable
+      Handler: adopters.approveAdoption
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/adopter/{adopterId}/pet/{petId}"
+            Method: DELETE
+
+  # ApproveAdoptionFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: deleteAdopter
+  #     Environment:
+  #       Variables:
+  #         USERS_TABLE: !Ref MyUsersTable
+  #     Handler: adopters.deleteAdopter
+  #     Runtime: python3.6
+  #     CodeUri: package/
+  #     Policies:
+  #       - DynamoDBWritePolicy:
+  #           TableName: !Ref MyUsersTable
+  #     Events:
+  #       GetUsers:
+  #         Type: Api
+  #         Properties:
+  #           RestApiId: !Ref MyAPI
+  #           Path: "/adopter/{adopterId}"
+  #           Method: DELETE
+  
+  
+
+  MyAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: my-api-gateway-9
+      StageName: prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: swagger.yaml
+
+  MyUsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: husky-app-adoption-table
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+          

@@ -1,0 +1,106 @@
+openapi: 3.0.0
+
+paths:
+
+  /adopter/{adopterId}/pet/{petId}
+    get:
+      summary: Given a user and a pet, show the adoption petition
+        - name: clientId
+          in: path
+          required: true
+          description: client ID
+        - name: petId
+          in: path
+          required: true
+          description: pet ID
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:showAdoption/invocations"
+        httpMethod: "POST"
+    put:
+      summary: Creates a new adoption petition
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: client ID
+        - name: petId
+          in: path
+          required: true
+          description: pet ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                house_type:
+                  type: string
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:createAdoption/invocations"
+        httpMethod: "POST"
+    delete:
+      summary: This endpoint approves (and deletes) an adoption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              #type: string
+              #description: The client id
+              #
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:approveAdoption/invocations"
+        httpMethod: "POST"
+    
+  /adopter/{adopterId}:
+    get:
+      summary: This endpoint shows a potential adopter
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: client ID
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:getAdopter/invocations"
+        httpMethod: "POST"
+    put:
+      summary: This endpoint puts a new adopter
+      parameters
+        - name: clientId
+          in: path
+          required: true
+          description: client ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                apellido_paterno:
+                  type: string
+                apellido_materno:
+                  type: string
+                edad:
+                  type: string
+                sexo:
+                  type: string
+                email:
+                  type: string
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putAdopter/invocations"
+        httpMethod: "POST"
+    

@@ -1,0 +1,22 @@
+
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.7
+    commands:
+      - ./deployment.sh -b
+  pre_build:
+    commands:
+      - ./deployment.sh -p
+  build:
+    commands:
+      - echo nel
+  post_build:
+    commands:
+      - echo "soy un polpo"
+artifacts:
+  files:
+    - packaged-template.json
+  name: upbCodepipeline
