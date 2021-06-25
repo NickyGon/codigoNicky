@@ -67,35 +67,14 @@ Resources:
             Path: "/adopter/{adopterId}/pet/{petId}"
             Method: PUT
   
-  ApproveAdoptionFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: approveAdoption
-      Environment:
-        Variables:
-          USERS_TABLE: !Ref MyUsersTable
-      Handler: adopters.approveAdoption
-      Runtime: python3.6
-      CodeUri: package/
-      Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref MyUsersTable
-      Events:
-        GetUsers:
-          Type: Api
-          Properties:
-            RestApiId: !Ref MyAPI
-            Path: "/adopter/{adopterId}/pet/{petId}"
-            Method: DELETE
-
   # ApproveAdoptionFunction:
   #   Type: AWS::Serverless::Function
   #   Properties:
-  #     FunctionName: deleteAdopter
+  #     FunctionName: approveAdoption
   #     Environment:
   #       Variables:
   #         USERS_TABLE: !Ref MyUsersTable
-  #     Handler: adopters.deleteAdopter
+  #     Handler: adopters.approveAdoption
   #     Runtime: python3.6
   #     CodeUri: package/
   #     Policies:
@@ -106,8 +85,9 @@ Resources:
   #         Type: Api
   #         Properties:
   #           RestApiId: !Ref MyAPI
-  #           Path: "/adopter/{adopterId}"
+  #           Path: "/adopter/{adopterId}/pet/{petId}"
   #           Method: DELETE
+
   
   
 
@@ -139,4 +119,20 @@ Resources:
           AttributeType: S
         - AttributeName: sk
           AttributeType: S
+  
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint:
+            Fn::GetAtt:
+              - "MyQueue1"
+              - "Arn"
+          Protocol: "sqs"
+        - Endpoint:
+            Fn::GetAtt:
+              - "MyQueue2"
+              - "Arn"
+          Protocol: "sqs"
+      TopicName: "AdoptionTopic"
           

@@ -5,7 +5,7 @@ import os
 users_table = os.environ['USERS_TABLE']
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(users_table)
-
+client = boto3.client('sns')
 
 def putAdopter(event, context):
     print(json.dumps({"running": True}))
@@ -28,11 +28,18 @@ def putAdopter(event, context):
         'email': body["email"]
     }
     
+    response = client.subscribe(
+    TopicArn='AdoptionTopic',
+    Protocol='email',
+    Endpoint=body["email"],
+    ReturnSubscriptionArn=True
+    )
     
     print(json.dumps(item))
     table.put_item(
        Item=item
     )
+    
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
@@ -82,3 +89,36 @@ def createAdoption(event,context):
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
     }
+    
+def deleteAdoption(event,context):
+    print(json.dumps({"running": True}))
+    print(json.dumps(event))
+    
+    path = event["path"]
+    user_id = path.split("/")[-1]
+    pet_id=path.split("/")[-3]# ["user", "id"]
+    
+    body = json.loads(event["body"])
+    
+    
+    
+    print(body)
+    print(user_id)
+    
+    response = client.publish(
+    TopicArn='AdoptionTopic',
+    PhoneNumber='string',
+    Message='Su adopcion ha sido realizada',
+    #user_id.email
+    Subject='string',
+    MessageStructure='string',
+    MessageAttributes={
+        'string': {
+            'DataType': 'string',
+            'StringValue': 'string',
+            'BinaryValue': b'bytes'
+        }
+    },
+    MessageDeduplicationId='string',
+    MessageGroupId='string'
+    )
