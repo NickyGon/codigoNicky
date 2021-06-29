@@ -43,6 +43,8 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:createAdoption/invocations"
         httpMethod: "POST"
+        
+        
     delete:
       summary: approves an adoption petition and deletes it from the table
       parameters:
@@ -59,6 +61,8 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:approveAdoption/invocations"
         httpMethod: "POST"
+        
+        
         
   /adopter/{adopterId}:
     get:

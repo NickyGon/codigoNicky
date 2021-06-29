@@ -109,7 +109,7 @@ Resources:
   MyUsersTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: husky-app-adoption-table
+      TableName: husky-app-adoption-DB
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
@@ -127,4 +127,4 @@ Resources:
   MySNSTopic:
     Type: AWS::SNS::Topic
     Properties:
-      TopicName: "AdoptionTopic"
+      TopicName: "AdoptionEmailSNS"

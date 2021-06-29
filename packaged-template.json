@@ -13,7 +13,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.putAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/c0e35c5452761a7dcb2c022fb7b37aee
+      CodeUri: s3://origin-1234/c7d2852892b5ecbce3c0b946cd8de812
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -41,7 +41,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.getAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/c0e35c5452761a7dcb2c022fb7b37aee
+      CodeUri: s3://origin-1234/c7d2852892b5ecbce3c0b946cd8de812
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -64,7 +64,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.createAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/c0e35c5452761a7dcb2c022fb7b37aee
+      CodeUri: s3://origin-1234/c7d2852892b5ecbce3c0b946cd8de812
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -87,7 +87,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.deleteAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/c0e35c5452761a7dcb2c022fb7b37aee
+      CodeUri: s3://origin-1234/c7d2852892b5ecbce3c0b946cd8de812
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -117,11 +117,11 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://origin-1234/536bef40002d5c90f1d544240d9a5f03
+            Location: s3://origin-1234/0e222382799f1312504a154d66613665
   MyUsersTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: husky-app-adoption-table
+      TableName: husky-app-adoption-DB
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
@@ -138,4 +138,4 @@ Resources:
   MySNSTopic:
     Type: AWS::SNS::Topic
     Properties:
-      TopicName: AdoptionTopic
+      TopicName: AdoptionEmailSNS

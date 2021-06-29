@@ -1,6 +1,6 @@
 #!/bin/bash
 DEPLOYMENT_BUCKET="origin-1234"
-STACK_NAME="husky-shelters"
+STACK_NAME="husky-shelters-1"
 
 while getopts ":bdp" OPTION; do
     case $OPTION in

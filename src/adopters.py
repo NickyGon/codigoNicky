@@ -30,19 +30,23 @@ def putAdopter(event, context):
         'email': body["email"]
     }
     
-    
+    email=body["email"]
     
     response = client.subscribe(
-    TopicArn='arn:aws:sns:us-east-1:366482477391:AdoptionTopic',
+    TopicArn='arn:aws:sns:us-east-1:366482477391:AdoptionEmailSNS',
     Protocol='email',
     Endpoint=body["email"],
     ReturnSubscriptionArn=True
     )
     
+
+    
     print(json.dumps(item))
     table.put_item(
        Item=item
     )
+    
+    
     
     return {
         'statusCode': 200,
@@ -102,21 +106,18 @@ def deleteAdoption(event,context):
     user_id = path.split("/")[-3]
     pet_id=path.split("/")[-1]# ["user", "id"]
     
-    body = json.loads(event["body"])
-    
-    print(body)
-    print(user_id)
-    
     response2 = table.get_item(
         Key={
             'pk': user_id,
-            'sk': pet_id
+            'sk': 'profile'
         }
     )
     
     
+    item3=response2['Item']
+    itemEm=response2['Item']['email']
+    itemNa=response2['Item']['nombre']
     
-    item = response2['Item']["email"]
     
     table.delete_item(
             Key={
@@ -127,22 +128,14 @@ def deleteAdoption(event,context):
         
         
     response = client.publish(
-    TopicArn='arn:aws:sns:us-east-1:366482477391:AdoptionTopic',
-    Message='Su adopcion ha sido realizada',
-    Subject=item,
-    MessageStructure='string',
-    MessageAttributes={
-        'string': {
-            'DataType': 'string',
-            'StringValue': 'string',
-            'BinaryValue': b'bytes'
-        }
-    },
-    MessageDeduplicationId='string',
-    MessageGroupId='string'
+    TopicArn='arn:aws:sns:us-east-1:366482477391:AdoptionEmailSNS',
+    Message='La adopcion por parte de '+itemNa+' ha sido realizada',
+    Subject=itemEm
     )
     
     return {
         'statusCode': 200,
-        'body': json.dumps(item)
+        'body': json.dumps(itemEm)
     }
+    
+   
