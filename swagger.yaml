@@ -4,6 +4,7 @@ paths:
   /adopter/{adopterId}/pet/{petId}:
     get:
       summary: Given a user and a pet, show the adoption petition
+      parameters:
         - name: adopterId
           in: path
           required: true
@@ -42,7 +43,23 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:createAdoption/invocations"
         httpMethod: "POST"
-    
+    delete:
+      summary: approves an adoption petition and deletes it from the table
+      parameters:
+        - name: adopterId
+          in: path
+          required: true
+          description: client ID
+        - name: petId
+          in: path
+          required: true
+          description: pet ID
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:approveAdoption/invocations"
+        httpMethod: "POST"
+        
   /adopter/{adopterId}:
     get:
       summary: This endpoint shows a potential adopter
@@ -59,7 +76,7 @@ paths:
         
     put:
       summary: This endpoint puts a new adopter
-      parameters
+      parameters:
         - name: adopterId
           in: path
           required: true
@@ -88,4 +105,4 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putAdopter/invocations"
         httpMethod: "POST"
-    
+      

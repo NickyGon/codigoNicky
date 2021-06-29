@@ -2,6 +2,8 @@ import json
 import boto3
 import os
 
+##s
+
 users_table = os.environ['USERS_TABLE']
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(users_table)
@@ -28,8 +30,10 @@ def putAdopter(event, context):
         'email': body["email"]
     }
     
+    
+    
     response = client.subscribe(
-    TopicArn='AdoptionTopic',
+    TopicArn='arn:aws:sns:us-east-1:366482477391:AdoptionTopic',
     Protocol='email',
     Endpoint=body["email"],
     ReturnSubscriptionArn=True
@@ -67,8 +71,8 @@ def createAdoption(event,context):
     print(json.dumps({"running": True}))
     print(json.dumps(event))
     path = event["path"]
-    user_id = path.split("/")[-1]
-    pet_id=path.split("/")[-3]# ["user", "id"]
+    user_id = path.split("/")[-3]
+    pet_id=path.split("/")[-1]# ["user", "id"]
     
     body = json.loads(event["body"])
     print(body)
@@ -95,22 +99,37 @@ def deleteAdoption(event,context):
     print(json.dumps(event))
     
     path = event["path"]
-    user_id = path.split("/")[-1]
-    pet_id=path.split("/")[-3]# ["user", "id"]
+    user_id = path.split("/")[-3]
+    pet_id=path.split("/")[-1]# ["user", "id"]
     
     body = json.loads(event["body"])
-    
-    
     
     print(body)
     print(user_id)
     
+    response2 = table.get_item(
+        Key={
+            'pk': user_id,
+            'sk': pet_id
+        }
+    )
+    
+    
+    
+    item = response2['Item']["email"]
+    
+    table.delete_item(
+            Key={
+                 'pk': user_id,
+                 'sk': pet_id
+            }
+        )
+        
+        
     response = client.publish(
-    TopicArn='AdoptionTopic',
-    PhoneNumber='string',
+    TopicArn='arn:aws:sns:us-east-1:366482477391:AdoptionTopic',
     Message='Su adopcion ha sido realizada',
-    #user_id.email
-    Subject='string',
+    Subject=item,
     MessageStructure='string',
     MessageAttributes={
         'string': {
@@ -122,3 +141,8 @@ def deleteAdoption(event,context):
     MessageDeduplicationId='string',
     MessageGroupId='string'
     )
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps(item)
+    }

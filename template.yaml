@@ -17,6 +17,8 @@ Resources:
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref MyUsersTable
+        - SNSCrudPolicy:
+            TopicName: !GetAtt MySNSTopic.TopicName
       Events:
         GetUsers:
           Type: Api
@@ -24,6 +26,7 @@ Resources:
             RestApiId: !Ref MyAPI
             Path: "/adopter/{adopterId}"
             Method: PUT
+            
   
   GetAdopterFunction:
     Type: AWS::Serverless::Function
@@ -36,7 +39,7 @@ Resources:
       Runtime: python3.6
       CodeUri: package/
       Policies:
-        - DynamoDBWritePolicy:
+        - DynamoDBReadPolicy:
             TableName: !Ref MyUsersTable
       Events:
         GetUsers:
@@ -67,29 +70,30 @@ Resources:
             Path: "/adopter/{adopterId}/pet/{petId}"
             Method: PUT
   
-  # ApproveAdoptionFunction:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     FunctionName: approveAdoption
-  #     Environment:
-  #       Variables:
-  #         USERS_TABLE: !Ref MyUsersTable
-  #     Handler: adopters.approveAdoption
-  #     Runtime: python3.6
-  #     CodeUri: package/
-  #     Policies:
-  #       - DynamoDBWritePolicy:
-  #           TableName: !Ref MyUsersTable
-  #     Events:
-  #       GetUsers:
-  #         Type: Api
-  #         Properties:
-  #           RestApiId: !Ref MyAPI
-  #           Path: "/adopter/{adopterId}/pet/{petId}"
-  #           Method: DELETE
-
-  
-  
+  ApproveAdoptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: approveAdoption
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref MyUsersTable
+      Handler: adopters.deleteAdoption
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MyUsersTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MyUsersTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt MySNSTopic.TopicName
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/adopter/{adopterId}/pet/{petId}"
+            Method: DELETE
 
   MyAPI:
     Type: AWS::Serverless::Api
@@ -123,16 +127,4 @@ Resources:
   MySNSTopic:
     Type: AWS::SNS::Topic
     Properties:
-      Subscription:
-        - Endpoint:
-            Fn::GetAtt:
-              - "MyQueue1"
-              - "Arn"
-          Protocol: "sqs"
-        - Endpoint:
-            Fn::GetAtt:
-              - "MyQueue2"
-              - "Arn"
-          Protocol: "sqs"
       TopicName: "AdoptionTopic"
-          
