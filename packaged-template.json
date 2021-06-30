@@ -13,7 +13,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.putAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/c7d2852892b5ecbce3c0b946cd8de812
+      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -41,7 +41,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.getAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/c7d2852892b5ecbce3c0b946cd8de812
+      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -64,7 +64,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.createAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/c7d2852892b5ecbce3c0b946cd8de812
+      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -75,7 +75,7 @@ Resources:
           Properties:
             RestApiId:
               Ref: MyAPI
-            Path: /adopter/{adopterId}/pet/{petId}
+            Path: /adopter/{adopterId}/animal/{animalId}
             Method: PUT
   ApproveAdoptionFunction:
     Type: AWS::Serverless::Function
@@ -87,7 +87,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.deleteAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/c7d2852892b5ecbce3c0b946cd8de812
+      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -106,7 +106,79 @@ Resources:
           Properties:
             RestApiId:
               Ref: MyAPI
-            Path: /adopter/{adopterId}/pet/{petId}
+            Path: /adopter/{adopterId}/animal/{animalId}
+            Method: DELETE
+  GetPetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getAnimal
+      Environment:
+        Variables:
+          USERS_TABLE:
+            Ref: MyUsersTable
+      Handler: Dogs.getPet
+      Runtime: python3.6
+      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /animal/{animalId}
+            Method: GET
+  UpdatePetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: updateAnimal
+      Environment:
+        Variables:
+          USERS_TABLE:
+            Ref: MyUsersTable
+      Handler: Dogs.updatePet
+      Runtime: python3.6
+      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /animal/{animalId}
+            Method: PUT
+  deletePetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: deleteAnimal
+      Environment:
+        Variables:
+          USERS_TABLE:
+            Ref: MyUsersTable
+      Handler: Dogs.deletePet
+      Runtime: python3.6
+      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      Policies:
+      - DynamoDBWritePolicy:
+          TableName:
+            Ref: MyUsersTable
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: MyAPI
+            Path: /animal/{animalId}
             Method: DELETE
   MyAPI:
     Type: AWS::Serverless::Api
@@ -117,7 +189,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://origin-1234/0e222382799f1312504a154d66613665
+            Location: s3://origin-1234/d41c27464e48ccabb81dbbce166c4b54
   MyUsersTable:
     Type: AWS::DynamoDB::Table
     Properties:

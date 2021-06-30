@@ -67,7 +67,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI
-            Path: "/adopter/{adopterId}/pet/{petId}"
+            Path: "/adopter/{adopterId}/animal/{animalId}"
             Method: PUT
   
   ApproveAdoptionFunction:
@@ -92,7 +92,73 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyAPI
-            Path: "/adopter/{adopterId}/pet/{petId}"
+            Path: "/adopter/{adopterId}/animal/{animalId}"
+            Method: DELETE
+            
+            
+  GetPetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getAnimal
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref MyUsersTable
+      Handler: Dogs.getPet
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/animal/{animalId}"
+            Method: GET
+            
+  UpdatePetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: updateAnimal
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref MyUsersTable
+      Handler: Dogs.updatePet
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/animal/{animalId}"
+            Method: PUT
+            
+  deletePetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: deleteAnimal
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref MyUsersTable
+      Handler: Dogs.deletePet
+      Runtime: python3.6
+      CodeUri: package/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MyUsersTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MyUsersTable
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MyAPI
+            Path: "/animal/{animalId}"
             Method: DELETE
 
   MyAPI:
@@ -105,6 +171,7 @@ Resources:
           Name: AWS::Include
           Parameters:
             Location: swagger.yaml
+          
 
   MyUsersTable:
     Type: AWS::DynamoDB::Table

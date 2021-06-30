@@ -126,10 +126,9 @@ def deleteAdoption(event,context):
             }
         )
         
-        
     response = client.publish(
     TopicArn='arn:aws:sns:us-east-1:366482477391:AdoptionEmailSNS',
-    Message='La adopcion por parte de '+itemNa+' ha sido realizada',
+    Message='La adopcion por parte de '+itemNa + "(" +itemEm +")"+' ha sido realizada',
     Subject=itemEm
     )
     
@@ -138,4 +137,3 @@ def deleteAdoption(event,context):
         'body': json.dumps(itemEm)
     }
     
-   

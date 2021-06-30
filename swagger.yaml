@@ -1,7 +1,7 @@
 openapi: 3.0.0
 
 paths:
-  /adopter/{adopterId}/pet/{petId}:
+  /adopter/{adopterId}/animal/{animalId}:
     get:
       summary: Given a user and a pet, show the adoption petition
       parameters:
@@ -9,7 +9,7 @@ paths:
           in: path
           required: true
           description: client ID
-        - name: petId
+        - name: animalId
           in: path
           required: true
           description: pet ID
@@ -25,7 +25,7 @@ paths:
           in: path
           required: true
           description: client ID
-        - name: petId
+        - name: animalId
           in: path
           required: true
           description: pet ID
@@ -52,7 +52,7 @@ paths:
           in: path
           required: true
           description: client ID
-        - name: petId
+        - name: animalId
           in: path
           required: true
           description: pet ID
@@ -109,4 +109,65 @@ paths:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:putAdopter/invocations"
         httpMethod: "POST"
-      
+  
+  /animal/{animalId}:
+    get:
+      summary: This endpoint shows an animal
+      parameters:
+        - name: animalId
+          in: path
+          required: true
+          description: client ID
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:getAnimal/invocations"
+        httpMethod: "POST"
+        
+    put:
+      summary: This endpoint puts an animal/modifies it
+      parameters:
+        - name: animalId
+          in: path
+          required: true
+          description: client ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                estado_de_salud:
+                  type: string
+                edad:
+                  type: string
+                ubicacion:
+                  type: string
+                IMG_1:
+                  type: string
+                IMG_2:
+                  type: string
+                IMG_3:
+                  type: string
+                IMG_4:
+                  type: string
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:updateAnimal/invocations"
+        httpMethod: "POST"
+    delete:
+      summary: This endpoint deletes an animal
+      parameters:
+        - name: animalId
+          in: path
+          required: true
+          description: client ID
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:deleteAnimal/invocations"
+        httpMethod: "POST"
