@@ -6,6 +6,7 @@ users_table = os.environ['USERS_TABLE']
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(users_table)
 client = boto3.client('sns')
+s3=boto3.resource('s3')
 
 def updatePet(event, context):
     print(json.dumps({"running": True}))
@@ -16,12 +17,10 @@ def updatePet(event, context):
     
     body = json.loads(event["body"])
     print(body)
-    print(account_id)
-    
     
     item={
         'pk': account_id,
-        'sk':'profile',
+        'sk': 'profile',
         'nombre': body["nombre"],
         'estado_de_salud': body["estado_de_salud"],
         'edad': body["edad"],
@@ -32,10 +31,28 @@ def updatePet(event, context):
         'IMG_4':body["IMG_4"]
     }
     
+    
+    
     table.put_item(
        Item=item
     )
     
+    putIM=body["IMG_1"].encode()
+    object = s3.Object('bucket-pet-api', 'img/'+putIM)
+    object.put(Body=putIM)
+    
+    
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
+        'body': json.dumps(item)
+        
+    }
+
 def getPet(event,context):
     print(json.dumps({"running": True}))
     print(json.dumps(event))
@@ -52,7 +69,13 @@ def getPet(event,context):
     item = response['Item']
     return {
         'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
         'body': json.dumps(item)
+        
     }
     
 def deletePet(event, context):
@@ -79,5 +102,10 @@ def deletePet(event, context):
     
     return {
         'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
         'body': json.dumps('Hello from Lambda!')
     }

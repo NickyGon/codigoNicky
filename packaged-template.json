@@ -13,7 +13,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.putAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -41,7 +41,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.getAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -64,7 +64,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.createAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -87,7 +87,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.deleteAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -118,7 +118,7 @@ Resources:
             Ref: MyUsersTable
       Handler: Dogs.getPet
       Runtime: python3.6
-      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -141,11 +141,14 @@ Resources:
             Ref: MyUsersTable
       Handler: Dogs.updatePet
       Runtime: python3.6
-      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
             Ref: MyUsersTable
+      - S3CrudPolicy:
+          BucketName:
+            Ref: S3Bucket
       Events:
         GetUsers:
           Type: Api
@@ -164,7 +167,7 @@ Resources:
             Ref: MyUsersTable
       Handler: Dogs.deletePet
       Runtime: python3.6
-      CodeUri: s3://origin-1234/b032bddb4ec4a5b4268bd8c50d786345
+      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -189,7 +192,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://origin-1234/d41c27464e48ccabb81dbbce166c4b54
+            Location: s3://origin-1234/7928cd5881e6c6590dee230cd1398eec
   MyUsersTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -211,3 +214,35 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       TopicName: AdoptionEmailSNS
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bucket-pet-api
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      VersioningConfiguration:
+        Status: Enabled
+      WebsiteConfiguration:
+        ErrorDocument: error.html
+        IndexDocument: index.html
+  BucketPolicyDataSync:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: S3Bucket
+      PolicyDocument:
+        Statement:
+        - Sid: AllowAccesToIAMRole
+          Action:
+          - s3:GetObject
+          Effect: Allow
+          Resource:
+            Fn::Join:
+            - ''
+            - - 'arn:aws:s3:::'
+              - Ref: S3Bucket
+              - /*
+          Principal: '*'

@@ -39,8 +39,6 @@ def putAdopter(event, context):
     ReturnSubscriptionArn=True
     )
     
-
-    
     print(json.dumps(item))
     table.put_item(
        Item=item
@@ -50,6 +48,11 @@ def putAdopter(event, context):
     
     return {
         'statusCode': 200,
+         'headers': {
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
         'body': json.dumps('Hello from Lambda!')
     }
     
@@ -68,6 +71,11 @@ def getAdopter(event, context):
     item = response['Item']
     return {
         'statusCode': 200,
+         'headers': {
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
         'body': json.dumps(item)
     }
 
@@ -95,6 +103,11 @@ def createAdoption(event,context):
     )
     return {
         'statusCode': 200,
+         'headers': {
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
         'body': json.dumps('Hello from Lambda!')
     }
     
@@ -134,6 +147,11 @@ def deleteAdoption(event,context):
     
     return {
         'statusCode': 200,
+         'headers': {
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
         'body': json.dumps(itemEm)
     }
     

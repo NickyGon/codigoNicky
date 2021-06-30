@@ -130,6 +130,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref MyUsersTable
+        - S3CrudPolicy:
+            BucketName: !Ref S3Bucket
       Events:
         GetUsers:
           Type: Api
@@ -195,3 +197,39 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       TopicName: "AdoptionEmailSNS"
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: bucket-pet-api
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      VersioningConfiguration:
+        Status: Enabled
+      WebsiteConfiguration:
+        ErrorDocument: error.html
+        IndexDocument: index.html
+          
+  BucketPolicyDataSync:  
+    Type: 'AWS::S3::BucketPolicy'  
+    Properties:  
+      Bucket:  !Ref S3Bucket
+      PolicyDocument:
+        Statement:  
+        -  
+          Sid: "AllowAccesToIAMRole"  
+          Action:  
+            - "s3:GetObject"
+          Effect: "Allow"  
+          Resource:  
+            Fn::Join:  
+              - ""  
+              -  
+                - "arn:aws:s3:::"  
+                -  
+                  Ref: "S3Bucket"  
+                - "/*"  
+          Principal: "*"  
