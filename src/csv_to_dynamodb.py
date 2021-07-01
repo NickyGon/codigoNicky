@@ -50,7 +50,7 @@ def handler(event, context):
            
            
             add_to_db = dynamodb.put_item(
-                TableName = 'husky-app-adoption-DB' ,
+                TableName = 'husky-app-adoption-DB2' ,
                 Item = {
                     'pk' : {'S': str(animal_id)},
                     'estado_de_salud' : {'S': str(health_status)},

@@ -13,7 +13,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.putAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
+      CodeUri: s3://origin-1234/91e7834632efb60d3fbf44748812f68f
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -41,7 +41,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.getAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
+      CodeUri: s3://origin-1234/91e7834632efb60d3fbf44748812f68f
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -64,7 +64,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.createAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
+      CodeUri: s3://origin-1234/91e7834632efb60d3fbf44748812f68f
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -87,7 +87,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.deleteAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
+      CodeUri: s3://origin-1234/91e7834632efb60d3fbf44748812f68f
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -118,7 +118,7 @@ Resources:
             Ref: MyUsersTable
       Handler: Dogs.getPet
       Runtime: python3.6
-      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
+      CodeUri: s3://origin-1234/91e7834632efb60d3fbf44748812f68f
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -141,7 +141,7 @@ Resources:
             Ref: MyUsersTable
       Handler: Dogs.updatePet
       Runtime: python3.6
-      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
+      CodeUri: s3://origin-1234/91e7834632efb60d3fbf44748812f68f
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
@@ -162,15 +162,13 @@ Resources:
     Properties:
       Handler: csv_to_dynamodb.handler
       Runtime: python3.6
-      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
+      CodeUri: s3://origin-1234/91e7834632efb60d3fbf44748812f68f
       Timeout: 10
       Policies:
       - DynamoDBCrudPolicy:
-          TableName:
-            Ref: MyUsersTable
+          TableName: husky-app-adoption-DB2
       - S3CrudPolicy:
-          BucketName:
-            Ref: S3Bucket
+          BucketName: csv-dynamodb-lambda2
   deletePetFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -181,7 +179,7 @@ Resources:
             Ref: MyUsersTable
       Handler: Dogs.deletePet
       Runtime: python3.6
-      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
+      CodeUri: s3://origin-1234/91e7834632efb60d3fbf44748812f68f
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -206,7 +204,7 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location: s3://origin-1234/7928cd5881e6c6590dee230cd1398eec
+            Location: s3://origin-1234/062820e40dbceff379dccf74201ec7d8
   MyUsersTable:
     Type: AWS::DynamoDB::Table
     Properties:

@@ -34,6 +34,7 @@ def putAdopter(event, context):
     
     response = client.subscribe(
     TopicArn='arn:aws:sns:us-east-1:366482477391:AdoptionEmailSNS',
+    #aqui copiar el arn del AdoptionEmailSNS que se elaboro en su repo
     Protocol='email',
     Endpoint=body["email"],
     ReturnSubscriptionArn=True
@@ -141,6 +142,7 @@ def deleteAdoption(event,context):
         
     response = client.publish(
     TopicArn='arn:aws:sns:us-east-1:366482477391:AdoptionEmailSNS',
+    #aqui copiar el arn del AdoptionEmailSNS que se elaboro en su repo
     Message='La adopcion por parte de '+itemNa + "(" +itemEm +")"+' ha sido realizada',
     Subject=itemEm
     )

@@ -37,9 +37,7 @@ def updatePet(event, context):
        Item=item
     )
     
-    putIM=body["IMG_1"].encode()
-    object = s3.Object('bucket-pet-api', 'img/'+putIM)
-    object.put(Body=putIM)
+
     
     
     return {

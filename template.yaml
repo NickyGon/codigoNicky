@@ -149,9 +149,9 @@ Resources:
           Timeout: 10
           Policies:
            - DynamoDBCrudPolicy:
-              TableName: !Ref MyUsersTable
+              TableName: husky-app-adoption-DB2
            - S3CrudPolicy:
-              BucketName: !Ref S3Bucket
+              BucketName: csv-dynamodb-lambda2
             
   deletePetFunction:
     Type: AWS::Serverless::Function
