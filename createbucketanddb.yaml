@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Transform:
+  - AWS::Serverless-2016-10-31
+  
+Description: Create DynamoDB
+Resources:
+  BucketDeployment:
+        Type: AWS::S3::Bucket
+        Properties:
+            BucketName: deployments-bucket-pets3
+  BucketCsv:
+        Type: AWS::S3::Bucket
+        Properties:
+            BucketName: csv-dynamodb-lambda2
+  MyTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: husky-app-adoption-DB2
+      PrimaryKey:
+        Name: pet_id 
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5

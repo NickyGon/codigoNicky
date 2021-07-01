@@ -13,7 +13,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.putAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
+      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -41,7 +41,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.getAdopter
       Runtime: python3.6
-      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
+      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -64,7 +64,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.createAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
+      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -87,7 +87,7 @@ Resources:
             Ref: MyUsersTable
       Handler: adopters.deleteAdoption
       Runtime: python3.6
-      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
+      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
       Policies:
       - DynamoDBWritePolicy:
           TableName:
@@ -118,7 +118,7 @@ Resources:
             Ref: MyUsersTable
       Handler: Dogs.getPet
       Runtime: python3.6
-      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
+      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
       Policies:
       - DynamoDBReadPolicy:
           TableName:
@@ -141,7 +141,7 @@ Resources:
             Ref: MyUsersTable
       Handler: Dogs.updatePet
       Runtime: python3.6
-      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
+      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
@@ -157,6 +157,20 @@ Resources:
               Ref: MyAPI
             Path: /animal/{animalId}
             Method: PUT
+  LambdaCsvToDynamo:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: csv_to_dynamodb.handler
+      Runtime: python3.6
+      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
+      Timeout: 10
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: MyUsersTable
+      - S3CrudPolicy:
+          BucketName:
+            Ref: S3Bucket
   deletePetFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -167,7 +181,7 @@ Resources:
             Ref: MyUsersTable
       Handler: Dogs.deletePet
       Runtime: python3.6
-      CodeUri: s3://origin-1234/6e78d33cfed9932cd425e80c1c1fe281
+      CodeUri: s3://origin-1234/1f61e1599cadb72c2159930ba4cde148
       Policies:
       - DynamoDBWritePolicy:
           TableName:
